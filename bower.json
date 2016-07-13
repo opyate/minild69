@@ -1,0 +1,10 @@
+{
+  "name": "temp",
+  "version": "0.0.0",
+  "dependencies": {
+    "threejs": "",
+    "requirejs": "~2.1.9",
+    "lodash": "4.13.1"
+  }
+}
+
