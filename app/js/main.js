@@ -42,25 +42,60 @@ require({
 
     var animating = false;
 
+    function newTween(direction) {
+        if (!animating) {
+            var state = {};
+            switch(direction) {
+            case 'left':
+                state = {
+                    axis: 'y',
+                    delta: Math.PI / 2
+                };
+                break;
+            case 'right':
+                state = {
+                    axis: 'y',
+                    delta: 0 - Math.PI / 2
+                };
+                break;
+            case 'up':
+                state = {
+                    axis: 'x',
+                    delta: Math.PI / 2
+                };
+                break;
+            case 'down':
+                state = {
+                    axis: 'x',
+                    delta: 0 - Math.PI / 2
+                };
+                break;
+            }
+
+
+            new TWEEN.Tween({pos: 0})
+                .to({pos: state.delta}, 500)
+                .onStart(function() {
+                    animating = true;
+                })
+                .onUpdate(function() {
+                    world.props.planet.rotation[state.axis] = this.pos;
+                })
+                .onComplete(function() {
+                    animating = false;
+                }).start();
+        }
+    }
+
     function animate() {
 
         requestAnimationFrame(animate);
 
-        if(world.keyboard.pressed("left")) {
-            if (!animating) {
-                new TWEEN.Tween({pos: 0})
-                    .to({pos: 0 + Math.PI / 2}, 500)
-                    .onStart(function() {
-                        animating = true;
-                    })
-                    .onUpdate(function() {
-                        world.props.planet.rotation.y = this.pos;
-                    })
-                    .onComplete(function() {
-                        animating = false;
-                    }).start();
+        _.each(['left', 'right', 'up', 'down'], function (direction) {
+            if (world.keyboard.pressed(direction)) {
+                newTween(direction);
             }
-        }
+        });
         TWEEN.update();
 
         world.things.renderer.render(world.things.scene, world.things.camera);

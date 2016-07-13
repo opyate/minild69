@@ -53,7 +53,7 @@ FOO.KeyboardState = function() {
     // bind keyEvents
     document.addEventListener("keydown", this._onKeyDown, false);
     document.addEventListener("keyup", this._onKeyUp, false);
-}
+};
 
 /**
  * To stop listening of the keyboard events
@@ -62,7 +62,7 @@ FOO.KeyboardState.prototype.destroy = function() {
     // unbind keyEvents
     document.removeEventListener("keydown", this._onKeyDown, false);
     document.removeEventListener("keyup", this._onKeyUp, false);
-}
+};
 
 FOO.KeyboardState.MODIFIERS = ['shift', 'ctrl', 'alt', 'meta'];
 FOO.KeyboardState.ALIAS = {
@@ -92,7 +92,7 @@ FOO.KeyboardState.prototype._onKeyChange = function(event, pressed) {
     this.modifiers['ctrl'] = event.ctrlKey;
     this.modifiers['alt'] = event.altKey;
     this.modifiers['meta'] = event.metaKey;
-}
+};
 
 /**
  * query keyboard state to know if a key is pressed of not
@@ -115,4 +115,4 @@ FOO.KeyboardState.prototype.pressed = function(keyDesc) {
         if (!pressed) return false;
     };
     return true;
-}
+};
