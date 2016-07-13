@@ -7,11 +7,13 @@ require({
         }
     },
     paths: {
-        lodash: 'vendor/lodash/lodash'
+        lodash: 'vendor/lodash/lodash',
+        tween: 'vendor/tween'
     }
 }, [
     'vendor/three',
     'lodash',
+    'tween',
     'base',
     'keyboard',
     'planet'
@@ -38,15 +40,28 @@ require({
         };
     }
 
+    var animating = false;
 
     function animate() {
 
         requestAnimationFrame(animate);
 
-        if(world.keyboard.pressed("a")) {
-            world.props.planet.rotation.x += 0.005;
-            world.props.planet.rotation.y += 0.01;
+        if(world.keyboard.pressed("left")) {
+            if (!animating) {
+                new TWEEN.Tween({pos: 0})
+                    .to({pos: 0 + Math.PI / 2}, 500)
+                    .onStart(function() {
+                        animating = true;
+                    })
+                    .onUpdate(function() {
+                        world.props.planet.rotation.y = this.pos;
+                    })
+                    .onComplete(function() {
+                        animating = false;
+                    }).start();
+            }
         }
+        TWEEN.update();
 
         world.things.renderer.render(world.things.scene, world.things.camera);
     }

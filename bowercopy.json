@@ -5,9 +5,10 @@
             "clean": true
         },
         "files": {
-            "three.js": "threejs/build/three.js",
+            "three.js": "three.js/three.min.js",
             "require.js": "requirejs/require.js",
-            "lodash": "lodash/lodash.js"
+            "lodash": "lodash/lodash.js",
+            "tween.js": "tween.js/src/Tween.js"
         }
     }
 }
