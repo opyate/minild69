@@ -28,6 +28,10 @@ FOO.addProps = function(scene) {
     var planet = addPlanet();
     container.add(planet);
 
+    // tilt the container
+    container.rotateX(Math.PI / 180 * 30);
+    container.rotateY(Math.PI / 180 * 30);
+
     scene.add(container);
 
     return {
