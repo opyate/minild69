@@ -56,7 +56,7 @@ FOO.move = function(world, direction) {
 
         var previous = 0; // for rotation tweening, not motion tweening
         new TWEEN.Tween({pos: 0})
-            .to({pos: Math.PI / 2}, 500)
+            .to({pos: Math.PI / 2}, 200)
             .onStart(function() {
                 FOO.animating = true;
             })
