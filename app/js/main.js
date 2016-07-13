@@ -16,7 +16,7 @@ require({
     'tween',
     'base',
     'keyboard',
-    'planet',
+    'stuff',
     'animation'
 ], function(THREE, _) {
 
@@ -39,7 +39,6 @@ require({
     }
 
     function animate() {
-
         requestAnimationFrame(animate);
 
         _.each(['a', 'd', 'w', 's', 'q', 'e'], function (direction) {
