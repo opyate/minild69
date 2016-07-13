@@ -1,6 +1,6 @@
 var FOO = FOO || {};
 
-FOO.addPlanet = function(scene, size, pos) {
+function addPlanet(size, pos) {
     size = size || 200;
     pos = pos || 0;
     var geometry = new THREE.BoxGeometry(size, size, size);
@@ -18,6 +18,20 @@ FOO.addPlanet = function(scene, size, pos) {
     });
     var mesh = new THREE.Mesh(geometry, material);
     mesh.position.set(pos,0,10);
-    scene.add(mesh);
+
     return mesh;
+};
+
+FOO.addProps = function(scene) {
+    var container = new THREE.Object3D();
+
+    var planet = addPlanet();
+    container.add(planet);
+
+    scene.add(container);
+
+    return {
+        container: container,
+        planet: planet
+    };
 };

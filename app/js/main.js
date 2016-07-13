@@ -20,7 +20,6 @@ require({
     'animation'
 ], function(THREE, _) {
 
-
     var world = init();
     animate();
 
@@ -31,12 +30,10 @@ require({
 
         var keyboard = new FOO.KeyboardState();
 
-        var planet = FOO.addPlanet(things.scene, 200);
+        var props = FOO.addProps(things.scene);
         return {
             things: things,
-            props: {
-                planet: planet
-            },
+            props: props,
             keyboard: keyboard
         };
     }
