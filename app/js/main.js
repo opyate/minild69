@@ -11,63 +11,44 @@ require({
     }
 }, [
     'vendor/three',
-    'lodash'
+    'lodash',
+    'base',
+    'keyboard',
+    'planet'
 ], function(THREE, _) {
 
-    var scene, camera, renderer;
-    var meshes = [];
 
-    init();
+    var world = init();
     animate();
 
-    function r() {
-        return Math.floor(Math.random() * 1000);
-    }
-
-    function m(size, pos) {
-        size = size || r();
-        pos = pos || 10;
-        var geometry = new THREE.BoxGeometry(size, size, size);
-        var material = new THREE.MeshBasicMaterial({
-            color: 0xff0000,
-            wireframe: true
-        });
-        var mesh = new THREE.Mesh(geometry, material);
-        mesh.position.set(pos,0,10);
-        meshes.push(mesh);
-        scene.add(mesh);
-    }
-
     function init() {
+        // things? See http://threejs.org/docs/#Manual/Introduction/Creating_a_scene
+        // "...we need three things: A scene, a camera, and a renderer..."
+        var things = FOO.init();
 
-        scene = new THREE.Scene();
+        var keyboard = new FOO.KeyboardState();
 
-        camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 10000);
-        camera.position.z = 1000;
-
-        _.times(3, function(idx) {
-            m(200, 500 * (idx - 1));
-        });
-
-
-        renderer = new THREE.WebGLRenderer();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-
-        document.body.appendChild(renderer.domElement);
-
+        var planet = FOO.addPlanet(things.scene, 200);
+        return {
+            things: things,
+            props: {
+                planet: planet
+            },
+            keyboard: keyboard
+        };
     }
+
 
     function animate() {
 
         requestAnimationFrame(animate);
 
-        _.each(meshes, function (mesh) {
-            mesh.rotation.x += 0.005;
-            mesh.rotation.y += 0.01;
-        });
+        if(world.keyboard.pressed("a")) {
+            world.props.planet.rotation.x += 0.005;
+            world.props.planet.rotation.y += 0.01;
+        }
 
-        renderer.render(scene, camera);
-
+        world.things.renderer.render(world.things.scene, world.things.camera);
     }
 
 });
