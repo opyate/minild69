@@ -45,7 +45,7 @@ require({
 
         requestAnimationFrame(animate);
 
-        _.each(['left', 'right', 'up', 'down'], function (direction) {
+        _.each(['a', 'd', 'w', 's', 'q', 'e'], function (direction) {
             if (world.keyboard.pressed(direction)) {
                 FOO.move(world, direction);
                 return;

@@ -5,47 +5,64 @@ FOO.animating = false;
 function getDeltaForDirection(direction) {
     var state = {};
     switch(direction) {
-    case 'left':
+    case 'a': // left
         state = {
-            axis: 'y',
-            delta: 0 - Math.PI / 2
+            axis: new THREE.Vector3(0,-1,0)
         };
         break;
-    case 'right':
+    case 'd': // right
         state = {
-            axis: 'y',
-            delta: Math.PI / 2
+            axis: new THREE.Vector3(0,1,0)
         };
         break;
-    case 'up':
+    case 'w': // up
         state = {
-            axis: 'x',
-            delta: 0 - Math.PI / 2
+            axis: new THREE.Vector3(-1,0,0)
         };
         break;
-    case 'down':
+    case 's': // down
         state = {
-            axis: 'x',
-            delta: Math.PI / 2
+            axis: new THREE.Vector3(1,0,0)
         };
         break;
+    case 'q': // roll left
+        state = {
+            axis: new THREE.Vector3(0,0,1)
+        };
+        break
+    case 'e': // roll right
+        state = {
+            axis: new THREE.Vector3(0,0,-1)
+        };
+        break
     }
     return state;
+}
+// Rotate an object around an arbitrary axis in world space
+function rotateAroundWorldAxis(object, axis, radians) {
+    var rotWorldMatrix = new THREE.Matrix4();
+    rotWorldMatrix.makeRotationAxis(axis.normalize(), radians);
+
+    rotWorldMatrix.multiply(object.matrix);
+
+    object.matrix = rotWorldMatrix;
+    object.rotation.setFromRotationMatrix(object.matrix);
 }
 
 FOO.move = function(world, direction) {
     if (!FOO.animating) {
+        var obj = world.props.planet;
         var state = getDeltaForDirection(direction);
 
-        var from = world.props.planet.rotation[state.axis];
-        var to = world.props.planet.rotation[state.axis] + state.delta;
-        new TWEEN.Tween({pos: from})
-            .to({pos: to}, 500)
+        var previous = 0; // for rotation tweening, not motion tweening
+        new TWEEN.Tween({pos: 0})
+            .to({pos: Math.PI / 2}, 500)
             .onStart(function() {
                 FOO.animating = true;
             })
             .onUpdate(function() {
-                world.props.planet.rotation[state.axis] = this.pos;
+                rotateAroundWorldAxis(obj, state.axis, this.pos - previous);
+                previous = this.pos;
             })
             .onComplete(function() {
                 FOO.animating = false;
