@@ -39,6 +39,7 @@ function getDeltaForDirection(direction) {
     return state;
 }
 // Rotate an object around an arbitrary axis in world space
+// From http://stackoverflow.com/a/11060965/51280
 function rotateAroundWorldAxis(object, axis, radians) {
     var rotWorldMatrix = new THREE.Matrix4();
     rotWorldMatrix.makeRotationAxis(axis.normalize(), radians);
