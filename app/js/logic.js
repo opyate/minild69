@@ -1,162 +1,175 @@
-// script with which to quickly interrogate milestone dependencies as per
-// the new-fangled dependency graph.
+define([], function() {
 
-var _ = require('lodash');
-var assert = require('assert');
+    var api = {
+        stencils: {},
+        faces: {}
+    };
 
-function getRandom() {
-    return Math.random() > 0.5;
-}
+    var getRandom = function() {
+        return Math.random() > 0.5;
+    };
+    api.stencils.rand = getRandom;
 
-function getHalf(n, i, j) {
-    return i < n / 2;
-}
+    var getHalf = function(n, i, j) {
+        return i < n / 2;
+    };
+    api.stencils.half = getHalf;
 
-function getQuarter(n, i, j) {
-    return i < n / 2 ^ j > n / 2;
-}
+    var getQuarter = function(n, i, j) {
+        return i < n / 2 ^ j > n / 2;
+    };
+    api.stencils.quarter = getQuarter;
 
-function getFull() {
-    return true;
-}
+    var getCheckered = function(n, i, j) {
+        return (i + j) % 2 == 0;
+    };
+    api.stencils.checkered = getCheckered;
 
-function getCheckered(n, i, j) {
-    return (i + j) % 2 == 0;
-}
+    var getDiagonal = function(n, i, j) {
+        return i + j == n;
+    };
+    api.stencils.diagonal = getDiagonal;
 
-function getDiagonal(n, i, j) {
-    return i + j == n;
-}
+    var getCenter = function(n, i, j) {
+        return i == Math.floor(n / 2) && j == Math.floor(n / 2);
+    };
+    api.stencils.center = getCenter;
 
-function getCenter(n, i, j) {
-    return i == Math.floor(n/2) && j == Math.floor(n/2);
-}
+    var getOne = function(n, i, j) {
+        return i == 1 && j == 1;
+    };
+    api.stencils.one = getOne;
 
-function getOne(n, i, j) {
-    return i == 1 && j == 1;
-}
-
-function getSquare(n, fn) {
-    var arr = [];
-    _.times(n, function(i) {
-        _.times(n, function(j) {
-            if (!arr[i]) {
-                arr[i] = [];
-            }
-            if (typeof fn === 'function') {
-                arr[i][j] = fn(n, i, j);
-            } else {
-                arr[i][j] = fn;
-            }
+    // get face of dimension n*n initialised with 'fn'
+    var initFace = function(n, fn) {
+        var arr = [];
+        _.times(n, function(i) {
+            _.times(n, function(j) {
+                if (!arr[i]) {
+                    arr[i] = [];
+                }
+                if (typeof fn === 'function') {
+                    arr[i][j] = fn(n, i, j);
+                } else {
+                    arr[i][j] = fn;
+                }
+            });
         });
-    });
-    return arr;
-}
+        return arr;
+    };
+    api.faces.init = initFace;
 
-function invert(mtx) {
-    return _.map(mtx, function (row) {
-        return _.map(row, function (atom) {
-            return !atom;
+    var toggle = function(face) {
+        return _.map(face, function(row) {
+            return _.map(row, function(atom) {
+                return !atom;
+            });
         });
-    });
-}
+    };
+    api.faces.toggle = toggle;
 
-// Get 'm' faces of dim 'n' of getSquare
-// all initialised to false.
-function faces(m, n, fn) {
-    var arr = [];
-    _.times(m, function(i) {
-        arr[i] = getSquare(n, false);
-    });
-    return arr;
-}
+    // Get 'm' faces of dim 'n' of getSquare
+    // all initialised to false.
+    var initFaces = function(m, n, fn) {
+        var arr = [];
+        _.times(m, function(i) {
+            arr[i] = initFace(n, false);
+        });
+        return arr;
+    };
+    api.faces.initN = initFaces;
 
-function rot(matrix, n) {
-    n = n || 1;
+    var rotateFace = function(face, n) {
+        n = n || 1;
 
-    _.times(n, function () {
-        matrix = rot(matrix);
-    });
+        _.times(n, function() {
+            face = rot(face);
+        });
 
-    return matrix;
+        return face;
 
-    function rot(matrix) {
-        return _.map(_.zip.apply(_, matrix), _.reverse);
+        function rot(matrix) {
+            return _.map(_.zip.apply(_, matrix), _.reverse);
+        }
+    };
+    api.faces.rotate = rotateFace;
+
+    // percentage col
+    var calculateColonised = function(faces) {
+        return _.reduce(faces, function(accFace, face) {
+            return _.reduce(face, function(accRow, row) {
+                return _.reduce(row, function(acc, atom) {
+                    var on = acc.on || 0;
+                    var off = acc.off || 0;
+                    acc.on = atom ? on + 1 : on;
+                    acc.off = !atom ? off + 1 : off;
+                    return acc;
+                }, accRow);
+            }, accFace);
+        }, {});
+    };
+    api.faces.calc = calculateColonised;
+
+    /**
+     * Slams 'stencil' rotated by 'rotations' into 'faces' at index 'idx'.
+     */
+    var slam = function(faces, idx, stencil, rotations) {
+        stencil = rotateFace(stencil, rotations);
+        faces[idx] = _.map(faces[idx], function(row, i) {
+            return _.map(row, function(atom, j) {
+                return atom || stencil[i][j];
+            });
+        });
+    };
+    api.faces.slam = slam;
+
+
+    function test() {
+        var DIM = 5;
+        var CDIM = 6; // number of faces on plt
+
+        var st = getSquare(DIM, getRandom);
+
+        // rotate 4 times for no effect.
+        var r = rot(st, 4);
+        var r2 = rot(rot(rot(rot(st))));
+        assert(_.isEqual(st, r));
+        assert(_.isEqual(r, r2));
+
+        var plt = faces(CDIM, DIM, false);
+        //console.log('faces', plt);
+        //console.log('percol before', calculateColonised(plt));
+
+        //slam(plt, st, 3, 2);
+        //console.log('faces', plt);
+        //console.log('percol after', calculateColonised(plt));
+
+        // full sim
+        _.times(CDIM, function(idx) {
+            // rots = 0, because it doesn't matter now...
+            slam(plt, getSquare(DIM, getRandom), idx, 0);
+        });
+        console.log(plt);
+        var result = calculateColonised(plt);
+        console.log(result);
+        assert(result.on + result.off == CDIM * DIM * DIM);
     }
-}
 
-// percentage col
-function calculateColonised(plt) {
-    return _.reduce(plt, function (accFace, face) {
-        return _.reduce(face, function (accRow, row) {
-            return _.reduce(row, function (acc, atom) {
-                var on = acc.on || 0;
-                var off = acc.off || 0;
-                acc.on = atom ? on + 1 : on;
-                acc.off = !atom ? off + 1 : off;
-                return acc;
-            }, accRow);
-        }, accFace);
-    }, {});
-}
+    function test2() {
+        var DIM = 5;
+        var CDIM = 6; // number of faces on plt
 
-/**
- * Slams 'st' rotated by 'rots' into 'plt' at index 'idx'.
- */
-function slam(plt, st, idx, rots) {
-    st = rot(st, rots);
-    var face = plt[idx];
-    plt[idx] = _.map(face, function (row, i) {
-        return _.map(row, function (atom, j) {
-            return atom || st[i][j];
-        });
-    });
-}
+        var st = getSquare(DIM, getHalf);
+        //console.log('st', st);
+        //console.log('st inv', invert(st));
 
-var DIM = 5;
-var CDIM = 6; // number of faces on plt
+        var st2 = getSquare(DIM, getOne);
+        console.log('st2', st2);
+        console.log('st2 inv', invert(st2));
 
-function test() {
+        var plt = faces(CDIM, DIM, false);
+    }
 
-    var st = getSquare(DIM, getRandom);
+    return api;
 
-    // rotate 4 times for no effect.
-    var r = rot(st, 4);
-    var r2 = rot(rot(rot(rot(st))));
-    assert(_.isEqual(st, r));
-    assert(_.isEqual(r, r2));
-
-    var plt = faces(CDIM, DIM, false);
-    //console.log('faces', plt);
-    //console.log('percol before', calculateColonised(plt));
-
-    //slam(plt, st, 3, 2);
-    //console.log('faces', plt);
-    //console.log('percol after', calculateColonised(plt));
-
-    // full sim
-    _.times(CDIM, function(idx) {
-        // rots = 0, because it doesn't matter now...
-        slam(plt, getSquare(DIM, getRandom), idx, 0);
-    });
-    console.log(plt);
-    var result = calculateColonised(plt);
-    console.log(result);
-    assert(result.on + result.off == CDIM * DIM * DIM);
-}
-
-function test2() {
-    var st = getSquare(DIM, getHalf);
-    //console.log('st', st);
-    //console.log('st inv', invert(st));
-
-    var st2 = getSquare(DIM, getOne);
-    console.log('st2', st2);
-    console.log('st2 inv', invert(st2));
-
-    var plt = faces(CDIM, DIM, false);
-}
-
-
-//test();
-test2();
+});

@@ -24,10 +24,6 @@ define([], function() {
         return mesh;
     };
 
-    // TODO move addPlanet to utility module
-    // TODO add getStencil to get colonisers.
-    // TODO decouple the stencil/face calculations from the gfx
-
     var addProps = function(scene) {
         var container = new THREE.Object3D();
 

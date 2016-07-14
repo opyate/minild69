@@ -19,7 +19,7 @@ define([
 
     return {
         start: function() {
-            game.loop(init());
+            game.setup(init());
         }
     };
 });
