@@ -47,6 +47,6 @@ define([], function() {
     };
 
     return {
-        addProps: addProps
+        addToScene: addProps
     };
 });

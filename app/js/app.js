@@ -3,21 +3,18 @@ define([
     'lodash',
     'tween',
     'basics',
-    'stuff',
+    'props',
     'animation'
-], function(THREE, _, tw, basics, stuff, anim) {
+], function(THREE, _, tw, basics, props, anim) {
 
     var init = function() {
         // set the stage (a scene, a camera, and a renderer...)
         var stage = basics.getStage();
 
-        var keyboard = basics.getKeyboard();
-
-        var props = stuff.addProps(stage.scene);
         return {
             stage: stage,
-            props: props,
-            keyboard: keyboard
+            props: props.addToScene(stage.scene),
+            keyboard: basics.getKeyboard()
         };
     };
 
