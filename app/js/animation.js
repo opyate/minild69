@@ -1,4 +1,4 @@
-define([], function() {
+define(['tween'], function(tween) {
     var self = this;
     self.animating = false;
 
@@ -56,7 +56,7 @@ define([], function() {
             var state = getDeltaForDirection(direction);
 
             var previous = 0; // for rotation tweening, not motion tweening
-            new TWEEN.Tween({
+            new tween.Tween({
                     pos: 0
                 })
                 .to({
