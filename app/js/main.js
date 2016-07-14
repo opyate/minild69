@@ -11,5 +11,5 @@ requirejs.config({
     }
 });
 requirejs(['app'], function(App) {
-    App.animate(App.init());
+    App.start();
 });

@@ -40,7 +40,8 @@ define([
     };
 
     return {
-        init: init,
-        animate: animate
+        start: function() {
+            animate(init());
+        }
     };
 });
