@@ -1,9 +1,10 @@
 define([
     'vendor/three',
+    'lodash',
     'basics',
     'props',
     'game'
-], function(THREE, basics, props, game) {
+], function(THREE, _, basics, props, game) {
 
     var init = function() {
         // set the stage (a scene, a camera, and a renderer...)
