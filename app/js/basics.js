@@ -1,4 +1,4 @@
-define([], function() {
+define(['controls'], function(controls) {
     var init = function() {
         var scene, camera, renderer;
 
@@ -20,6 +20,9 @@ define([], function() {
     };
 
     return {
-        init: init
+        getStage: init,
+        getKeyboard: function () {
+            return new controls.keyboard();
+        }
     };
 });

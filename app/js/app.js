@@ -2,17 +2,16 @@ define([
     'vendor/three',
     'lodash',
     'tween',
-    'base',
-    'keyboard',
+    'basics',
     'stuff',
     'animation'
-], function(THREE, _, tw, bstrap, input, stuff, anim) {
+], function(THREE, _, tw, basics, stuff, anim) {
 
     var init = function() {
         // set the stage (a scene, a camera, and a renderer...)
-        var stage = bstrap.init();
+        var stage = basics.getStage();
 
-        var keyboard = new input.keyboard();
+        var keyboard = basics.getKeyboard();
 
         var props = stuff.addProps(stage.scene);
         return {
