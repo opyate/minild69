@@ -9,15 +9,14 @@ define([
 ], function(THREE, _, tw, bstrap, input, stuff, anim) {
 
     var init = function() {
-        // things? See http://threejs.org/docs/#Manual/Introduction/Creating_a_scene
-        // "...we need three *things*: A scene, a camera, and a renderer..."
-        var things = bstrap.init();
+        // set the stage (a scene, a camera, and a renderer...)
+        var stage = bstrap.init();
 
         var keyboard = new input.keyboard();
 
-        var props = stuff.addProps(things.scene);
+        var props = stuff.addProps(stage.scene);
         return {
-            things: things,
+            stage: stage,
             props: props,
             keyboard: keyboard
         };
@@ -36,7 +35,7 @@ define([
         });
         TWEEN.update();
 
-        world.things.renderer.render(world.things.scene, world.things.camera);
+        world.stage.renderer.render(world.stage.scene, world.stage.camera);
     };
 
     return {
