@@ -1,4 +1,4 @@
-define([], function() {
+define(['lodash'], function(_) {
 
     function addPlanet(size, pos) {
         size = size || 200;
