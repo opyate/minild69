@@ -87,14 +87,13 @@ define([
             stencils: stencils,
             noOfStencilsAvailable: numberOfAvailableStencils,
             stencilIndices: stencilIndices,
-            stencilsUsed: _.join(stencilsUsed, ',')
+            stencilsUsed: stencilsUsed
         };
     }
 
     var level = function(levelNumber, world) {
         // get stencils
         var stencils = getStencils(levelNumber, config.level);
-        console.log(stencils.stencilsUsed);
 
         var planes = _.map(stencils.stencils, function(stencil, idx) {
             var plane = getPlaneFromStencil(idx, stencil, config.width);
@@ -102,7 +101,10 @@ define([
             return plane;
         });
 
-        return planes;
+        return {
+            planes: planes,
+            stencils: stencils
+        };
     };
 
     // reusable materials

@@ -10,7 +10,13 @@ define([
             world.stage.background = result;
 
             // TODO iterate levels based on inputs, completion, &c
-            levels.getLevel(1, world);
+            var level = levels.getLevel(1, world);
+            world.level = level;
+            console.log(
+                'LEVEL',
+                world.level.stencils.level,
+                world.level.stencils.stencilsUsed
+            );
 
             loop(world);
         }, function (err) {
@@ -33,7 +39,9 @@ define([
 
         // slam the colonisers
         if (world.keyboard.pressed('space')) {
-            console.log('slam!');
+            // TODO do something with the planes and stencil data here
+            // also tweening of planes...
+            console.log('slam!', world.level);
         }
         tween.update();
 
