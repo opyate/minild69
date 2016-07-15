@@ -1,4 +1,5 @@
 define(['controls', 'config', 'promise'], function(controls, config, promise) {
+    "use strict";
 
     // background returns its own camera, because we
     // might decide to start moving the game camera at some point.

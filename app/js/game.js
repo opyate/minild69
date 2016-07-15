@@ -3,6 +3,7 @@ define([
     'animation',
     'levels'
 ], function(tween, animation, levels) {
+    "use strict";
 
     var setup = function (world) {
         world.stage.background.then(function (result) {

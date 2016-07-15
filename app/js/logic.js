@@ -1,4 +1,5 @@
 define([], function() {
+    "use strict";
 
     var api = {
         stencil: {}, // stencils by name

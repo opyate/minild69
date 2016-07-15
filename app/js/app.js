@@ -5,6 +5,7 @@ define([
     'props',
     'game'
 ], function(THREE, _, basics, props, game) {
+    "use strict";
 
     var init = function() {
         // set the stage (a scene, a camera, and a renderer...)

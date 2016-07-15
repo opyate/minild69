@@ -1,4 +1,5 @@
 define([], function () {
+    "use strict";
 
     return {
         background: 'img/stars2.jpg',

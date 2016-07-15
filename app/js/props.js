@@ -1,4 +1,5 @@
 define([], function() {
+    "use strict";
 
     function addPlanet(size, pos) {
         size = size || 200;

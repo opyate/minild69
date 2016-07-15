@@ -1,4 +1,5 @@
 define([], function() {
+    "use strict";
 
     // from http://learningthreejs.com/blog/2011/09/12/lets-Make-a-3D-game-keyboard/
     //

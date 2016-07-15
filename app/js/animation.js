@@ -1,4 +1,6 @@
 define(['tween'], function(tween) {
+    //"use strict";
+
     var self = this;
     self.animatingCube = false;
     self.animatingPlanes = false;

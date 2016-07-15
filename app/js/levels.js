@@ -3,6 +3,7 @@ define([
     'config',
     'calcs',
 ], function(logic, config, calcs) {
+    "use strict";
 
     // our planet is a cube, hence 6 faces, hence 6 stencils required.
     // difficulty can increase along these axes:
