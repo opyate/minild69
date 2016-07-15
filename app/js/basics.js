@@ -35,12 +35,12 @@ define(['controls', 'promise'], function(controls, promise) {
                 },
                 // Function called when download progresses
                 function(xhr) {
-                    console.log('Background image', (xhr.loaded / xhr.total * 100) + '% loaded');
+                    //console.log('Background image', (xhr.loaded / xhr.total * 100) + '% loaded');
                 },
                 // Function called when download errors
                 function(xhr) {
                     console.log('An error happened');
-                    reject(Error(""));
+                    reject(Error("could not download img/starrs.jpg"));
                 }
             );
         });

@@ -1,4 +1,7 @@
-define(['logic'], function (logic) {
+define([
+    'logic',
+    'config'
+], function (logic, config) {
 
     // http://stackoverflow.com/a/29332646/51280
     // D=100 : just return the bias
@@ -29,27 +32,6 @@ define(['logic'], function (logic) {
             return a * Math.exp(-(x - b) * (x - b) / (2 * c * c));
         }
     }
-
-    // quick test
-    if (false) {
-        var N = 8;
-        _.times(N, function (i) {
-            var x = _.times(5000, function(o) { return getRndBias(0,N,i, 25); });
-            var y = _.groupBy(x);
-            var max = {idx:0, val:0};
-            for (var key in y) {
-                if (y[key].length > max.val) {
-                    max = {
-                        idx: parseInt(key),
-                        val: y[key].length
-                    };
-                }
-            }
-            var flag = max.idx !== i ? "X" : '';
-            console.log(flag, i, y[i].length, max, y);
-        });
-    }
-
 
     // our planet is a cube, hence 6 faces, hence 6 stencils required.
     // difficulty can increase along these axes:
@@ -102,6 +84,7 @@ define(['logic'], function (logic) {
         // most of the below is for debugging, and the caller will mostly
         // be interested in 'stencils'
         return {
+            level: levelNumber,
             stencilWidth: stencilWidth,
             stencils: stencils,
             noOfStencilsAvailable: numberOfAvailableStencils,
@@ -111,15 +94,12 @@ define(['logic'], function (logic) {
     }
 
     var level = function(levelNumber, world) {
-        console.log('logic', logic);
-        console.log('world', world);
-
         // get stencils
-        var stencils = getStencils(levelNumber, world.config.level);
+        var stencils = getStencils(levelNumber, config.level);
         console.log(stencils);
 
         var planes = _.map(stencils.stencils, function (stencil, idx) {
-            var plane = getPlaneFromStencil(idx, stencil, world.config.width);
+            var plane = getPlaneFromStencil(idx, stencil, config.width);
             world.props.container.add(plane);
             return plane;
         });
@@ -141,7 +121,7 @@ define(['logic'], function (logic) {
         invisibleMaterial
     ];
 
-    var DIST = 400;
+
     // http://stackoverflow.com/a/846249/51280
     function logslider(idx) {
         // position will be between 0 and 5
@@ -150,19 +130,12 @@ define(['logic'], function (logic) {
 
         // The result should be between 1 an 200
         var minv = Math.log(1);
-        var maxv = Math.log(DIST);
+        var maxv = Math.log(config.distance);
 
         // calculate adjustment factor
         var scale = (maxv-minv) / (maxp-minp);
 
         return Math.exp(minv + scale*(idx-minp));
-    }
-
-    // quick test
-    if (false) {
-        _.times(6, function (idx) {
-            console.log(idx, logslider(idx));
-        });
     }
 
     function getPlaneFromStencil(idx, stencil, width) {
@@ -174,7 +147,7 @@ define(['logic'], function (logic) {
             stencil.length);
 
         var plane = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
-        plane.position.set(0, 0, (DIST - logslider(idx)) + width * 2);
+        plane.position.set(0, 0, (config.distance - logslider(idx)) + width * 2);
 
         // faces are triangles, but we want squares (i.e. pairs of triangles)
         var squareCount = geometry.faces.length / 2;
