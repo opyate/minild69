@@ -1,4 +1,49 @@
 define(['controls'], function(controls) {
+
+    // background returns its own camera, because we
+    // might decide to start moving the game camera at some point.
+    function background() {
+        // Load the background texture
+        // (courtesy https://www.pexels.com/search/milky%20way/)
+        var loader = new THREE.TextureLoader();
+
+        loader.load(
+            // resource URL
+            'img/stars.jpg',
+            // Function when resource is loaded
+            function(texture) {
+                var mesh = new THREE.Mesh(
+                    new THREE.PlaneGeometry(2, 2, 0),
+                    new THREE.MeshBasicMaterial({
+                        map: texture
+                    }));
+
+                mesh.material.depthTest = false;
+                mesh.material.depthWrite = false;
+
+                // Create your background scene
+                var scene = new THREE.Scene();
+                var camera = new THREE.Camera();
+                scene.add(camera);
+                scene.add(mesh);
+                var result = {
+                    scene: scene,
+                    camera: camera
+                };
+            },
+            // Function called when download progresses
+            function(xhr) {
+                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+            },
+            // Function called when download errors
+            function(xhr) {
+                console.log('An error happened');
+            }
+        );
+
+
+    }
+
     var init = function() {
         var scene, camera, renderer;
 
@@ -15,13 +60,14 @@ define(['controls'], function(controls) {
         return {
             scene: scene,
             camera: camera,
+            background: background(),
             renderer: renderer
         };
     };
 
     return {
         getStage: init,
-        getKeyboard: function () {
+        getKeyboard: function() {
             return new controls.keyboard();
         }
     };
