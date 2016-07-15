@@ -1,6 +1,7 @@
 define(['tween'], function(tween) {
     var self = this;
-    self.animating = false;
+    self.animatingCube = false;
+    self.animatingPlanes = false;
 
     function getDeltaForDirection(direction) {
         var state = {};
@@ -50,8 +51,8 @@ define(['tween'], function(tween) {
         object.rotation.setFromRotationMatrix(object.matrix);
     }
 
-    var move = function(world, direction) {
-        if (!self.animating) {
+    var moveCube = function(world, direction) {
+        if (!self.animatingCube) {
             var obj = world.props.planet;
             var state = getDeltaForDirection(direction);
 
@@ -63,19 +64,30 @@ define(['tween'], function(tween) {
                     pos: Math.PI / 2
                 }, 200)
                 .onStart(function() {
-                    self.animating = true;
+                    self.animatingCube = true;
                 })
                 .onUpdate(function() {
                     rotateAroundWorldAxis(obj, state.axis, this.pos - previous);
                     previous = this.pos;
                 })
                 .onComplete(function() {
-                    self.animating = false;
+                    self.animatingCube = false;
                 }).start();
         }
     };
 
+    var slam = function(world) {
+        if (!self.animatingPlanes) {
+            console.log('moving plane');
+            self.animatingPlanes = true;
+            setInterval(function() {
+                self.animatingPlanes = false;
+            }, 1000);
+        }
+    };
+
     return {
-        move: move
+        moveCube: moveCube,
+        slam: slam
     };
 });

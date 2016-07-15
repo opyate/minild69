@@ -35,16 +35,14 @@ define([
         // rotate the world
         _.each(['a', 'd', 'w', 's', 'q', 'e'], function (direction) {
             if (world.keyboard.pressed(direction)) {
-                animation.move(world, direction);
+                animation.moveCube(world, direction);
                 return false; // break
             }
         });
 
         // slam the colonisers
         if (world.keyboard.pressed('space')) {
-            // TODO do something with the planes and stencil data here
-            // also tweening of planes...
-            console.log('slam!', world.level);
+            animation.slam(world);
         }
         tween.update();
 
