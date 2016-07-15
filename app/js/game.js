@@ -47,6 +47,8 @@ define([
         }
         tween.update();
 
+        world.stage.renderer.autoClear = false;
+        world.stage.renderer.clear();
         world.stage.renderer.render(
             world.stage.background.scene,
             world.stage.background.camera
