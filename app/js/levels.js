@@ -74,9 +74,12 @@ define(['logic'], function (logic) {
                 numberOfAvailableStencils,
                 levelCycle);
 
-            // if we're about to pick the last stencil, but the second-last
-            // stencil was 'all', just add 'all' again.
-            if (stencils.length == 5 && stencilsUsed[4] === 'all') {
+            // if we're about to pick the last stencil,
+            // and one of the chosen stencils is 'all', then
+            // just pick 'all' again.
+            // (Otherwise the last stencil could be notAll, and the
+            // code below will add notAll.inv which goes over 6)
+            if (stencils.length == 5 && _.includes(stencilsUsed, 'all')) {
                 randomStencilIndex = 0;
             }
 
