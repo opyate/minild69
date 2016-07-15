@@ -39,7 +39,6 @@ define(['controls', 'promise'], function(controls, promise) {
                 },
                 // Function called when download errors
                 function(xhr) {
-                    console.log('An error happened');
                     reject(Error("could not download img/starrs.jpg"));
                 }
             );

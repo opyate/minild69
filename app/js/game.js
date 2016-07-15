@@ -20,7 +20,7 @@ define([
 
             loop(world);
         }, function (err) {
-            console.err('Game loop aborted.');
+            console.error('Game loop aborted.');
         });
     };
 
