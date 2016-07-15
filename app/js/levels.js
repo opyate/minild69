@@ -139,6 +139,7 @@ define(['logic'], function (logic) {
     ];
 
     var DIST = 400;
+    // http://stackoverflow.com/a/846249/51280
     function logslider(idx) {
         // position will be between 0 and 5
         var minp = 0;
