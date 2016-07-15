@@ -31,9 +31,9 @@ define([], function() {
         container.add(planet);
 
         // tilt the container
-        container.rotateX(Math.PI / 180 * 30);
-        container.rotateY(Math.PI / 180 * 45);
-        container.position.set(0, 0, 0);
+        container.rotateX(Math.PI / 180 * 15);
+        container.rotateY(Math.PI / 180 * 60);
+        container.position.set(-500, 0, 0);
 
         scene.add(container);
 

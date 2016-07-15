@@ -138,6 +138,7 @@ define(['logic'], function (logic) {
         invisibleMaterial
     ];
 
+    var DIST = 400;
     function logslider(idx) {
         // position will be between 0 and 5
         var minp = 0;
@@ -145,7 +146,7 @@ define(['logic'], function (logic) {
 
         // The result should be between 1 an 200
         var minv = Math.log(1);
-        var maxv = Math.log(300);
+        var maxv = Math.log(DIST);
 
         // calculate adjustment factor
         var scale = (maxv-minv) / (maxp-minp);
@@ -169,7 +170,7 @@ define(['logic'], function (logic) {
             stencil.length);
 
         var plane = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
-        plane.position.set(0, 0, (300 - logslider(idx)) + width * 2);
+        plane.position.set(0, 0, (DIST - logslider(idx)) + width * 2);
 
         // faces are triangles, but we want squares (i.e. pairs of triangles)
         var squareCount = geometry.faces.length / 2;
