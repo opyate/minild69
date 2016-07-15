@@ -1,44 +1,60 @@
 define([], function() {
 
     var api = {
-        stencils: {},
+        stencil: {}, // stencils by name
+        stencils: [], // stencils sorted by difficulty
         faces: {}
     };
 
     var getRandom = function() {
         return Math.random() > 0.5;
     };
-    api.stencils.rand = getRandom;
+    api.stencil.rand = getRandom;
 
     var getHalf = function(n, i, j) {
         return i < n / 2;
     };
-    api.stencils.half = getHalf;
+    api.stencil.half = getHalf;
 
     var getQuarter = function(n, i, j) {
         return i < n / 2 ^ j > n / 2;
     };
-    api.stencils.quarter = getQuarter;
+    api.stencil.quarter = getQuarter;
 
     var getCheckered = function(n, i, j) {
         return (i + j) % 2 == 0;
     };
-    api.stencils.checkered = getCheckered;
+    api.stencil.checkered = getCheckered;
 
     var getDiagonal = function(n, i, j) {
         return i + j == n;
     };
-    api.stencils.diagonal = getDiagonal;
+    api.stencil.diagonal = getDiagonal;
 
     var getCenter = function(n, i, j) {
         return i == Math.floor(n / 2) && j == Math.floor(n / 2);
     };
-    api.stencils.center = getCenter;
+    api.stencil.center = getCenter;
 
     var getOne = function(n, i, j) {
         return i == 1 && j == 1;
     };
-    api.stencils.one = getOne;
+    api.stencil.one = getOne;
+
+    var getAll = function() {
+        return true;
+    };
+    api.stencil.all = getAll;
+
+    // stencils sorted by difficulty, easiest first (lowest index)
+    api.stencils.push(getAll);
+    api.stencils.push(getHalf);
+    api.stencils.push(getQuarter);
+    api.stencils.push(getCenter);
+    api.stencils.push(getOne);
+    api.stencils.push(getDiagonal);
+    api.stencils.push(getCheckered);
+    api.stencils.push(getRandom);
 
     // get face of dimension n*n initialised with 'fn'
     var initFace = function(n, fn) {

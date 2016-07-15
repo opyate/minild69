@@ -14,7 +14,7 @@ define([
         world.config = CONF;
 
         // TODO iterate levels based on inputs, completion, &c
-        levels.first(world);
+        levels.getLevel(0, world);
 
         loop(world);
     };

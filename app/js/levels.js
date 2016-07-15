@@ -5,13 +5,14 @@ define(['logic'], function (logic) {
     // render the stencil on the stage
     // listen for stencil-related inputs (e.g. slam)
 
-    var first = function(world) {
+    var level = function(levelNumber, world) {
 
         console.log('logic', logic);
         console.log('world', world);
 
-        // get stencil
-        var stencil = logic.faces.init(3, logic.stencils.checkered);
+
+        // get stencils
+        var stencil = logic.faces.init(3, logic.stencil.checkered);
         console.log('stencil', stencil);
         // draw a plane based on stencil
 
@@ -52,6 +53,6 @@ define(['logic'], function (logic) {
     };
 
     return {
-        first: first
+        getLevel: level
     };
 });
