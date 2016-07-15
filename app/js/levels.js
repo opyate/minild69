@@ -31,6 +31,22 @@ define([
         }
     }
 
+    // procedurally generate the stencil index and width appropriate
+    // for this level number.
+    // Note how when the width increases, the easier stencils
+    // get dished out again.
+    function getStencilParameters(levelNumber) {
+        var stencilIndex = levelNumber % logic.stencils.length;
+        // n*n stencil size
+        var width = config.level.initStencilWidth +
+            Math.floor(levelNumber / logic.stencils.length);
+
+        return {
+            width: width,
+            idx: stencilIndex
+        };
+    }
+
     // our planet is a cube, hence 6 faces, hence 6 stencils required.
     // difficulty can increase along these axes:
     // - levelNumber
@@ -38,21 +54,19 @@ define([
     // - stencil size (once the size increases, use the easier stencils again)
     // - stencil rotation (this can be binary random, i.e. rotate or not)
     function getStencils(levelNumber, levelConfig) {
-        // n*n stencil size
-        var stencilWidth = Math.floor((levelNumber / levelConfig.threshold) + levelConfig.initStencilWidth);
+        var stencilParams = getStencilParameters(levelNumber);
 
         var stencils = [];
         var stencilsUsed = [];
         var stencilIndices = [];
-        var numberOfAvailableStencils = logic.stencils.length;
-        var levelCycle = (levelNumber % numberOfAvailableStencils) - 1;
+
         while (stencils.length < 6) {
             // for each level up to the number of stencils available, bias
             // towards the level number, then cycle
             var randomStencilIndex = getRndBias(
                 0,
-                numberOfAvailableStencils,
-                levelCycle);
+                logic.stencils.length,
+                stencilParams.idx);
 
             // if we're about to pick the last stencil,
             // and one of the chosen stencils is 'all', then
@@ -67,7 +81,7 @@ define([
             var stencilObj = logic.stencils[randomStencilIndex];
 
             stencilsUsed.push(stencilObj.name);
-            var stencil = logic.faces.init(stencilWidth, stencilObj.fn);
+            var stencil = logic.faces.init(stencilParams.width, stencilObj.fn);
             stencils.push(stencil);
 
             // unless this stencil is 'all', also add its inverse.
@@ -83,9 +97,9 @@ define([
         // be interested in 'stencils'
         return {
             level: levelNumber,
-            stencilWidth: stencilWidth,
+            stencilWidth: stencilParams.width,
             stencils: stencils,
-            noOfStencilsAvailable: numberOfAvailableStencils,
+            noOfStencilsAvailable: logic.stencils.length,
             stencilIndices: stencilIndices,
             stencilsUsed: stencilsUsed
         };

@@ -9,15 +9,6 @@ define([
 
             world.stage.background = result;
 
-            // TODO iterate levels based on inputs, completion, &c
-            var level = levels.getLevel(1, world);
-            world.level = level;
-            console.log(
-                'LEVEL',
-                world.level.stencils.level,
-                world.level.stencils.stencilsUsed
-            );
-
             loop(world);
         }, function (err) {
             console.error('Game loop aborted.');
@@ -28,6 +19,18 @@ define([
         requestAnimationFrame(function() {
             loop(world);
         });
+
+        // load level
+        if (!world.level) {
+            // TODO iterate levels based on inputs, completion, &c
+            var level = levels.getLevel(0, world);
+            world.level = level;
+            console.log(
+                'LEVEL',
+                world.level.stencils.level,
+                world.level.stencils.stencilsUsed
+            );
+        }
 
         // rotate the world
         _.each(['a', 'd', 'w', 's', 'q', 'e'], function (direction) {
