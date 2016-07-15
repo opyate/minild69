@@ -9,52 +9,65 @@ define([], function() {
     var getRandom = function() {
         return Math.random() > 0.5;
     };
-    api.stencil.rand = getRandom;
 
     var getHalf = function(n, i, j) {
         return i < n / 2;
     };
-    api.stencil.half = getHalf;
 
     var getQuarter = function(n, i, j) {
         return i < n / 2 ^ j > n / 2;
     };
-    api.stencil.quarter = getQuarter;
 
     var getCheckered = function(n, i, j) {
         return (i + j) % 2 == 0;
     };
-    api.stencil.checkered = getCheckered;
 
     var getDiagonal = function(n, i, j) {
         return i + j == n;
     };
-    api.stencil.diagonal = getDiagonal;
 
     var getCenter = function(n, i, j) {
         return i == Math.floor(n / 2) && j == Math.floor(n / 2);
     };
-    api.stencil.center = getCenter;
 
     var getOne = function(n, i, j) {
         return i == 1 && j == 1;
     };
-    api.stencil.one = getOne;
 
     var getAll = function() {
         return true;
     };
-    api.stencil.all = getAll;
 
-    // stencils sorted by difficulty, easiest first (lowest index)
-    api.stencils.push(getAll);
-    api.stencils.push(getHalf);
-    api.stencils.push(getQuarter);
-    api.stencils.push(getCenter);
-    api.stencils.push(getOne);
-    api.stencils.push(getDiagonal);
-    api.stencils.push(getCheckered);
-    api.stencils.push(getRandom);
+    // build stencil API
+    _.each([{
+        name: 'all',
+        fn: getAll
+    }, {
+        name: 'half',
+        fn: getHalf
+    }, {
+        name: 'quarter',
+        fn: getQuarter
+    }, {
+        name: 'center',
+        fn: getCenter
+    }, {
+        name: 'one',
+        fn: getOne
+    }, {
+        name: 'diagonal',
+        fn: getDiagonal
+    }, {
+        name: 'checkered',
+        fn: getCheckered
+    }, {
+        name: 'random',
+        fn: getRandom
+    }], function(o, idx) {
+        api.stencil[o.name] = o.fn;
+        // stencils sorted by difficulty, easiest first (lowest index)
+        api.stencils.push(o);
+    });
 
     // get face of dimension n*n initialised with 'fn'
     var initFace = function(n, fn) {

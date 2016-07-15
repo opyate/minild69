@@ -4,9 +4,14 @@ define([
     'levels'
 ], function(tween, animation, levels) {
 
-    // everything is square, so we'll re-use width.
     var CONF = {
-        width: 200
+        // everything is square, so we'll re-use width.
+        width: 200,
+        level: {
+            // the number of levels after which stencil size and difficulty changes
+            threshold: 7,
+            initStencilWidth: 3
+        }
     };
 
     var setup = function (world) {
@@ -14,7 +19,7 @@ define([
         world.config = CONF;
 
         // TODO iterate levels based on inputs, completion, &c
-        levels.getLevel(0, world);
+        levels.getLevel(1, world);
 
         loop(world);
     };

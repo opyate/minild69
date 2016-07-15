@@ -32,7 +32,8 @@ define([], function() {
 
         // tilt the container
         container.rotateX(Math.PI / 180 * 30);
-        container.rotateY(Math.PI / 180 * 30);
+        container.rotateY(Math.PI / 180 * 45);
+        container.position.set(0, 0, 0);
 
         scene.add(container);
 
