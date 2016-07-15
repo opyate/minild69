@@ -1,4 +1,4 @@
-define(['controls'], function(controls) {
+define(['controls', 'promise'], function(controls, promise) {
 
     // background returns its own camera, because we
     // might decide to start moving the game camera at some point.
@@ -7,41 +7,45 @@ define(['controls'], function(controls) {
         // (courtesy https://www.pexels.com/search/milky%20way/)
         var loader = new THREE.TextureLoader();
 
-        loader.load(
-            // resource URL
-            'img/stars.jpg',
-            // Function when resource is loaded
-            function(texture) {
-                var mesh = new THREE.Mesh(
-                    new THREE.PlaneGeometry(2, 2, 0),
-                    new THREE.MeshBasicMaterial({
-                        map: texture
-                    }));
+        var promise = new Promise(function(resolve, reject) {
+            loader.load(
+                // resource URL
+                'img/stars.jpg',
+                // Function when resource is loaded
+                function(texture) {
+                    var mesh = new THREE.Mesh(
+                        new THREE.PlaneGeometry(2, 2, 0),
+                        new THREE.MeshBasicMaterial({
+                            map: texture
+                        }));
 
-                mesh.material.depthTest = false;
-                mesh.material.depthWrite = false;
+                    mesh.material.depthTest = false;
+                    mesh.material.depthWrite = false;
 
-                // Create your background scene
-                var scene = new THREE.Scene();
-                var camera = new THREE.Camera();
-                scene.add(camera);
-                scene.add(mesh);
-                var result = {
-                    scene: scene,
-                    camera: camera
-                };
-            },
-            // Function called when download progresses
-            function(xhr) {
-                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-            },
-            // Function called when download errors
-            function(xhr) {
-                console.log('An error happened');
-            }
-        );
+                    // Create your background scene
+                    var scene = new THREE.Scene();
+                    var camera = new THREE.Camera();
+                    scene.add(camera);
+                    scene.add(mesh);
+                    var result = {
+                        scene: scene,
+                        camera: camera
+                    };
+                    resolve(result);
+                },
+                // Function called when download progresses
+                function(xhr) {
+                    console.log('Background image', (xhr.loaded / xhr.total * 100) + '% loaded');
+                },
+                // Function called when download errors
+                function(xhr) {
+                    console.log('An error happened');
+                    reject(Error(""));
+                }
+            );
+        });
 
-
+        return promise;
     }
 
     var init = function() {

@@ -8,7 +8,8 @@
             "three.js": "three.js/three.min.js",
             "require.js": "requirejs/require.js",
             "lodash": "lodash/lodash.js",
-            "tween.js": "tween.js/src/Tween.js"
+            "tween.js": "tween.js/src/Tween.js",
+            "es6-promise": "es6-promise/es6-promise.min.js"
         }
     }
 }

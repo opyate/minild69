@@ -7,7 +7,8 @@ requirejs.config({
     },
     paths: {
         lodash: 'vendor/lodash/lodash',
-        tween: 'vendor/tween'
+        tween: 'vendor/tween',
+        promise: 'vendor/es6-promise/es6-promise.min'
     }
 });
 requirejs(['app'], function(App) {
