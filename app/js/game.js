@@ -6,9 +6,12 @@ define([
 
     var setup = function (world) {
         world.stage.background.then(function (result) {
-            // TODO iterate levels based on inputs, completion, &c
+
             world.stage.background = result;
+
+            // TODO iterate levels based on inputs, completion, &c
             levels.getLevel(1, world);
+
             loop(world);
         }, function (err) {
             console.err('Game loop aborted.');

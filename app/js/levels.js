@@ -1,7 +1,7 @@
 define([
     'logic',
     'config'
-], function (logic, config) {
+], function(logic, config) {
 
     // http://stackoverflow.com/a/29332646/51280
     // D=100 : just return the bias
@@ -24,9 +24,7 @@ define([
         var influence = Math.floor(Math.random() * (101)),
             x = Math.floor(Math.random() * (max - min + 1)) + min;
 
-        return x > N
-            ? x + Math.floor(gauss(influence) * (N - x))
-            : x - Math.floor(gauss(influence) * (x - N));
+        return x > N ? x + Math.floor(gauss(influence) * (N - x)) : x - Math.floor(gauss(influence) * (x - N));
 
         function gauss(x) {
             return a * Math.exp(-(x - b) * (x - b) / (2 * c * c));
@@ -96,9 +94,9 @@ define([
     var level = function(levelNumber, world) {
         // get stencils
         var stencils = getStencils(levelNumber, config.level);
-        console.log(stencils);
+        console.log(stencils.stencilsUsed);
 
-        var planes = _.map(stencils.stencils, function (stencil, idx) {
+        var planes = _.map(stencils.stencils, function(stencil, idx) {
             var plane = getPlaneFromStencil(idx, stencil, config.width);
             world.props.container.add(plane);
             return plane;
@@ -109,8 +107,9 @@ define([
 
     // reusable materials
     var visibleMaterial = new THREE.MeshBasicMaterial({
-        color: 0xffff00,
-        side: THREE.DoubleSide} );
+        color: config.stencilColour,
+        side: THREE.DoubleSide
+    });
     var invisibleMaterial = new THREE.MeshBasicMaterial({
         transparent: true,
         opacity: 0.0,
@@ -133,9 +132,9 @@ define([
         var maxv = Math.log(config.distance);
 
         // calculate adjustment factor
-        var scale = (maxv-minv) / (maxp-minp);
+        var scale = (maxv - minv) / (maxp - minp);
 
-        return Math.exp(minv + scale*(idx-minp));
+        return Math.exp(minv + scale * (idx - minp));
     }
 
     function getPlaneFromStencil(idx, stencil, width) {
@@ -154,7 +153,7 @@ define([
 
         // flatten the stencil from 2-dim array so we can easily index it.
         var flatStencil = _.flatten(stencil);
-        for (var i=0; i<squareCount; i++) {
+        for (var i = 0; i < squareCount; i++) {
             var j = i * 2;
             geometry.faces[j].materialIndex = flatStencil[i] ? 0 : 1;
             geometry.faces[j + 1].materialIndex = flatStencil[i] ? 0 : 1;
