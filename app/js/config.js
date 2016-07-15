@@ -1,6 +1,7 @@
 define([], function () {
 
     return {
+        background: 'img/stars2.jpg',
         // everything is square, so we'll re-use width.
         width: 200,
         // how far the stencils are from the planet

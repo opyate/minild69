@@ -1,4 +1,4 @@
-define(['controls', 'promise'], function(controls, promise) {
+define(['controls', 'config', 'promise'], function(controls, config, promise) {
 
     // background returns its own camera, because we
     // might decide to start moving the game camera at some point.
@@ -10,7 +10,7 @@ define(['controls', 'promise'], function(controls, promise) {
         var promise = new Promise(function(resolve, reject) {
             loader.load(
                 // resource URL
-                'img/stars.jpg',
+                config.background,
                 // Function when resource is loaded
                 function(texture) {
                     var mesh = new THREE.Mesh(
@@ -39,7 +39,7 @@ define(['controls', 'promise'], function(controls, promise) {
                 },
                 // Function called when download errors
                 function(xhr) {
-                    reject(Error("could not download img/starrs.jpg"));
+                    reject(Error("could not download", config.background));
                 }
             );
         });
