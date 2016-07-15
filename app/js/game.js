@@ -4,7 +4,14 @@ define([
     'levels'
 ], function(tween, animation, levels) {
 
+    // everything is square, so we'll re-use width.
+    var CONF = {
+        width: 200
+    };
+
     var setup = function (world) {
+
+        world.config = CONF;
 
         // TODO iterate levels based on inputs, completion, &c
         levels.first(world);
