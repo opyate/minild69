@@ -22,30 +22,22 @@ define([
         var stencilsUsed = [];
         var stencilIndices = [];
 
-        while (stencils.length < 6) {
+        _.times(6, function () {
             // for each level up to the number of stencils available, bias
             // towards the level number, then cycle
             var randomStencilIndex = calcs.rand(
-                0,
+                levelNumber,
                 logic.stencils.length,
                 stencilParams.idx);
-
-            // if we're about to pick the last stencil,
-            // and one of the chosen stencils is 'all', then
-            // just pick 'all' again.
-            // (Otherwise the last stencil could be notAll, and the
-            // code below will add notAll.inv which goes over 6)
-            if (stencils.length == 5 && _.includes(stencilsUsed, 'all')) {
-                randomStencilIndex = 0;
-            }
 
             stencilIndices.push(randomStencilIndex);
             var stencilObj = logic.stencils[randomStencilIndex];
 
             stencilsUsed.push(stencilObj.name);
-            var stencil = logic.faces.init(stencilParams.width, stencilObj.fn);
+            var stencil = logic.faces.initFace(stencilParams.width, stencilObj.fn);
             stencils.push(stencil);
 
+            // TODO see note on logic.js L133
             // unless this stencil is 'all', also add its inverse.
             // (this means a level can be perfectly completed)
             if (stencilObj.name !== 'all') {
@@ -53,26 +45,34 @@ define([
                 stencilsUsed.push(stencilObj.name + '.inv');
                 stencils.push(inverse);
             }
-        }
+        });
 
         // most of the below is for debugging, and the caller will mostly
-        // be interested in 'stencils'
+        // be interested in 'stencils' and 'appliedStencils'.
+        // We save the numberOfStencils, because at some point in the animation
+        // it is good to know this value, but it can't be derived from
+        // stencils.length anymore, because 'stencils' are mutated.
         return {
             level: levelNumber,
             stencilWidth: stencilParams.width,
             stencils: stencils,
-            noOfStencilsAvailable: logic.stencils.length,
-            stencilIndices: stencilIndices,
-            stencilsUsed: stencilsUsed
+            numberOfStencils: stencils.length,
+            appliedStencils: logic.faces.initFaces(6, stencilParams.width),
+            debug: {
+                stencilsUsed: stencilsUsed,
+                stencilIndices: stencilIndices,
+                noOfStencilsAvailable: logic.stencils.length
+            }
         };
     }
 
-    var level = function(levelNumber, world) {
+    var level = function(world) {
+        var levelNumber = world.progress.levelNumber;
         // get stencils
         var stencils = getStencils(levelNumber, config.level);
 
         var planes = _.map(stencils.stencils, function(stencil, idx) {
-            var plane = getPlaneFromStencil(idx, stencil, config.width);
+            var plane = getPlaneFromStencil(idx, stencil, config.width, stencils.stencils.length);
             world.props.container.add(plane);
             return plane;
         });
@@ -98,7 +98,7 @@ define([
         invisibleMaterial
     ];
 
-    function getPlaneFromStencil(idx, stencil, width) {
+    function getPlaneFromStencil(idx, stencil, width, numberOfStencils) {
         // draw a plane based on stencil
         var geometry = new THREE.PlaneGeometry(
             width,
@@ -107,7 +107,8 @@ define([
             stencil.length);
 
         var plane = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
-        var z = (config.distance - calcs.logslider(idx, config.distance)) + width * 2;
+        var log = calcs.logslider(idx, config.distance, numberOfStencils - 1);
+        var z = (config.distance - log) + width * 2;
         plane.position.set(0, 0, z);
 
         // faces are triangles, but we want squares (i.e. pairs of triangles)

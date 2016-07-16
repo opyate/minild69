@@ -23,13 +23,22 @@ define([
 
         // load level
         if (!world.level) {
-            // TODO iterate levels based on inputs, completion, &c
-            var level = levels.getLevel(0, world);
+
+            // set the level number
+            if (!('progress' in world)) {
+                world.progress = {
+                    levelNumber: 0
+                };
+            } else {
+                ++world.progress.levelNumber;
+            }
+
+            var level = levels.getLevel(world);
             world.level = level;
             console.log(
                 'LEVEL',
                 world.level.stencils.level,
-                world.level.stencils.stencilsUsed
+                world.level.stencils.debug.stencilsUsed
             );
         }
 

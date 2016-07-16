@@ -1,8 +1,9 @@
 define([
     'config',
     'tween',
-    'calcs'
-], function(config, tween, calcs) {
+    'calcs',
+    'logic'
+], function(config, tween, calcs, logic) {
     "use strict";
 
     var api = {};
@@ -85,21 +86,23 @@ define([
     var slam = function(world) {
         if (!api.isAnimatingPlanes) {
             _.each(world.level.planes, function(plane, idx) {
-                var lsPos = calcs.logslider(idx, config.distance);
-                var z = (config.distance - calcs.logslider(idx + 1, config.distance)) + config.width * 2;
+                var log = calcs.logslider(idx, config.distance, world.level.stencils.numberOfStencils - 1);
 
                 var pos;
-                if (idx === world.level.planes.length - 1) {
+                if (idx === 0) {
+                    // the first plane gets rendered a pixel above
+                    // the cube face, to look like it's slamming into it.
                     pos = 101;
                 } else {
-                    pos = z;
+                    pos = plane.position.z - log;
                 }
+
                 new tween.Tween({
                         pos: plane.position.z
                     })
                     .to({
                         pos: pos
-                    }, 100)
+                    }, 200)
                     .onStart(function() {
                         api.isAnimatingPlanes = true;
                     })
@@ -108,7 +111,30 @@ define([
                     })
                     .onComplete(function() {
                         api.isAnimatingPlanes = false;
-                    }).start();
+
+                        // if this is the last plane being iterated
+                        // (although, this might be a bug, because the last plane
+                        // tween won't necessarily 'complete' last)
+                        // Regardless, we want the below block to only
+                        // run once.
+                        if (idx == world.level.planes.length - 1) {
+                            var appliedIdx = 0;//getFrom(world.props.planet.rotation);
+                            var stencil = world.level.stencils.stencils[0];
+                            var rotations = 0;//getFrom(world.props.planet.rotation);
+                            //if (false)
+                            logic.faces.slam(
+                                world.level.stencils.appliedStencils,
+                                appliedIdx,
+                                stencil,
+                                rotations);
+
+                            console.log('slam complete', world);
+
+                            world.level.planes = _.tail(world.level.planes);
+                            world.level.stencils.stencils = _.tail(world.level.stencils.stencils);
+                        }
+                    })
+                    .start();
 
             });
         }

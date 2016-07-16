@@ -87,7 +87,7 @@ define([], function() {
         });
         return arr;
     };
-    api.faces.init = initFace;
+    api.faces.initFace = initFace;
 
     var toggle = function(face) {
         return _.map(face, function(row) {
@@ -98,16 +98,23 @@ define([], function() {
     };
     api.faces.toggle = toggle;
 
+    // TODO instead of having initFace and getting its inverse somewhere down the
+    // line using 'toggle', have 'initFace' return a stencil and its inverse in one go.
+    // In fact, even better: have it return many faces, some with only 1 pixel set.
+
     // Get 'm' faces of dim 'n' of getSquare
-    // all initialised to false.
+    // all initialised to fn.
+    // This is useful for initialising the m=6
+    // faces that represent a new planet (with fn=false)
     var initFaces = function(m, n, fn) {
+        fn = fn || false;
         var arr = [];
         _.times(m, function(i) {
-            arr[i] = initFace(n, false);
+            arr[i] = initFace(n, fn);
         });
         return arr;
     };
-    api.faces.initN = initFaces;
+    api.faces.initFaces = initFaces;
 
     var rotateFace = function(face, n) {
         n = n || 1;

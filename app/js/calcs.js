@@ -33,6 +33,8 @@ define([], function () {
     // for this level number.
     // Note how when the width increases, the easier stencils
     // get dished out again.
+    // 'stencilIndex' is used for lookup into the ordered-by-difficulty
+    // stencil array in logic.js
     function getStencilParameters(levelNumber, numOfStencils, baseWidth) {
         var stencilIndex = levelNumber % numOfStencils;
         // n*n stencil size
@@ -50,17 +52,32 @@ define([], function () {
         return 'ls' + idx + '-' + max;
     }
     // http://stackoverflow.com/a/846249/51280
-    function logslider(idx, max) {
+    // we also provide numberOfStencils, so even if we're given
+    // 6 or 15 stencils, we won't go over 'max' pixels.
+    // E.g. they'll be drawn like this:
+    //             <-- max pixels ------------>
+    //            |         |      |     |   |||
+    //            |            |         |   | |
+    //       ---> x                            y <---
+    //
+    // Clearly, the first example has more stencils,
+    // but get squashed into the same amount of pixels.
+    function logslider(idx, max, numberOfStencils) {
+        // we want the first stencil (at idx 0) to
+        // be the furthest away from the other stencils
+        // ('x' above in the comment)
+        // the stencils at the higher indexes should
+        // be tightly packed. ('y' above)
+        idx = numberOfStencils - idx;
         var key = lsKey(idx, max);
         if (key in logsliderCache) {
             return logsliderCache[key];
         } else {
-            // position will be between 0 and 5
-            // HACK 5 because of 6 cube faces.
-            var minp = 0;
-            var maxp = 5;
 
-            // The result should be between 1 an 200
+            var minp = 0;
+            var maxp = numberOfStencils;
+
+            // The result should be between 1 and max
             var minv = Math.log(1);
             var maxv = Math.log(max);
 
