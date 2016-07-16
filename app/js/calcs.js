@@ -45,21 +45,32 @@ define([], function () {
         };
     }
 
+    var logsliderCache = {};
+    function lsKey(idx, max) {
+        return 'ls' + idx + '-' + max;
+    }
     // http://stackoverflow.com/a/846249/51280
     function logslider(idx, max) {
-        // position will be between 0 and 5
-        // TODO 5 because of 6 cube faces.
-        var minp = 0;
-        var maxp = 5;
+        var key = lsKey(idx, max);
+        if (key in logsliderCache) {
+            return logsliderCache[key];
+        } else {
+            // position will be between 0 and 5
+            // HACK 5 because of 6 cube faces.
+            var minp = 0;
+            var maxp = 5;
 
-        // The result should be between 1 an 200
-        var minv = Math.log(1);
-        var maxv = Math.log(max);
+            // The result should be between 1 an 200
+            var minv = Math.log(1);
+            var maxv = Math.log(max);
 
-        // calculate adjustment factor
-        var scale = (maxv - minv) / (maxp - minp);
+            // calculate adjustment factor
+            var scale = (maxv - minv) / (maxp - minp);
 
-        return Math.exp(minv + scale * (idx - minp));
+            var result = Math.exp(minv + scale * (idx - minp));
+            logsliderCache[key] = result;
+            return result;
+        }
     }
 
     return {

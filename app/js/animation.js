@@ -1,4 +1,8 @@
-define(['tween'], function(tween) {
+define([
+    'config',
+    'tween',
+    'calcs'
+], function(config, tween, calcs) {
     "use strict";
 
     var api = {};
@@ -80,8 +84,31 @@ define(['tween'], function(tween) {
 
     var slam = function(world) {
         if (!api.animatingPlanes) {
-            console.log('moving plane');
+            console.log('moving plane', world);
             api.animatingPlanes = true;
+
+            _.each(world.level.planes, function(plane, idx) {
+                var lsPos = calcs.logslider(idx, config.distance);
+                var z = (config.distance - calcs.logslider(idx + 1, config.distance)) + config.width * 2;
+
+                new tween.Tween({
+                        pos: plane.position.z
+                    })
+                    .to({
+                        pos: z
+                    }, 100)
+                    .onStart(function() {
+                        api.animatingCube = true;
+                    })
+                    .onUpdate(function() {
+                        plane.position.set(0, 0, this.pos);
+                    })
+                    .onComplete(function() {
+                        api.animatingCube = false;
+                    }).start();
+
+            });
+
             setInterval(function() {
                 api.animatingPlanes = false;
             }, 1000);
