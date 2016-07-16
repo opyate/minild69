@@ -20,7 +20,7 @@ define([], function() {
             vertexColors: THREE.FaceColors
         });
         var mesh = new THREE.Mesh(geometry, material);
-        mesh.position.set(pos, 0, 10);
+        mesh.position.set(pos, 0, 0);
 
         return mesh;
     };

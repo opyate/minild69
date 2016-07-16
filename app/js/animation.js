@@ -91,11 +91,17 @@ define([
                 var lsPos = calcs.logslider(idx, config.distance);
                 var z = (config.distance - calcs.logslider(idx + 1, config.distance)) + config.width * 2;
 
+                var pos;
+                if (idx === world.level.planes.length - 1) {
+                    pos = 101;
+                } else {
+                    pos = z;
+                }
                 new tween.Tween({
                         pos: plane.position.z
                     })
                     .to({
-                        pos: z
+                        pos: pos
                     }, 100)
                     .onStart(function() {
                         api.animatingCube = true;
