@@ -6,8 +6,8 @@ define([
     "use strict";
 
     var api = {};
-    api.animatingCube = false;
-    api.animatingPlanes = false;
+    api.isAnimatingCube = false;
+    api.isAnimatingPlanes = false;
 
     function getDeltaForDirection(direction) {
         var state = {};
@@ -58,7 +58,7 @@ define([
     }
 
     var moveCube = function(world, direction) {
-        if (!api.animatingCube) {
+        if (!api.isAnimatingCube) {
             var obj = world.props.planet;
             var state = getDeltaForDirection(direction);
 
@@ -70,23 +70,20 @@ define([
                     pos: Math.PI / 2
                 }, 200)
                 .onStart(function() {
-                    api.animatingCube = true;
+                    api.isAnimatingCube = true;
                 })
                 .onUpdate(function() {
                     rotateAroundWorldAxis(obj, state.axis, this.pos - previous);
                     previous = this.pos;
                 })
                 .onComplete(function() {
-                    api.animatingCube = false;
+                    api.isAnimatingCube = false;
                 }).start();
         }
     };
 
     var slam = function(world) {
-        if (!api.animatingPlanes) {
-            console.log('moving plane', world);
-            api.animatingPlanes = true;
-
+        if (!api.isAnimatingPlanes) {
             _.each(world.level.planes, function(plane, idx) {
                 var lsPos = calcs.logslider(idx, config.distance);
                 var z = (config.distance - calcs.logslider(idx + 1, config.distance)) + config.width * 2;
@@ -104,23 +101,21 @@ define([
                         pos: pos
                     }, 100)
                     .onStart(function() {
-                        api.animatingCube = true;
+                        api.isAnimatingPlanes = true;
                     })
                     .onUpdate(function() {
                         plane.position.set(0, 0, this.pos);
                     })
                     .onComplete(function() {
-                        api.animatingCube = false;
+                        api.isAnimatingPlanes = false;
                     }).start();
 
             });
-
-            setInterval(function() {
-                api.animatingPlanes = false;
-            }, 1000);
         }
     };
 
+    // these functions will be called many times from the
+    // game loop, hence the is* flags.
     api.moveCube = moveCube;
     api.slam = slam;
     return api;
