@@ -160,53 +160,6 @@ define([], function() {
     };
     api.faces.slam = slam;
 
-
-    function test() {
-        var DIM = 5;
-        var CDIM = 6; // number of faces on plt
-
-        var st = getSquare(DIM, getRandom);
-
-        // rotate 4 times for no effect.
-        var r = rot(st, 4);
-        var r2 = rot(rot(rot(rot(st))));
-        assert(_.isEqual(st, r));
-        assert(_.isEqual(r, r2));
-
-        var plt = faces(CDIM, DIM, false);
-        //console.log('faces', plt);
-        //console.log('percol before', calculateColonised(plt));
-
-        //slam(plt, st, 3, 2);
-        //console.log('faces', plt);
-        //console.log('percol after', calculateColonised(plt));
-
-        // full sim
-        _.times(CDIM, function(idx) {
-            // rots = 0, because it doesn't matter now...
-            slam(plt, getSquare(DIM, getRandom), idx, 0);
-        });
-        console.log(plt);
-        var result = calculateColonised(plt);
-        console.log(result);
-        assert(result.on + result.off == CDIM * DIM * DIM);
-    }
-
-    function test2() {
-        var DIM = 5;
-        var CDIM = 6; // number of faces on plt
-
-        var st = getSquare(DIM, getHalf);
-        //console.log('st', st);
-        //console.log('st inv', invert(st));
-
-        var st2 = getSquare(DIM, getOne);
-        console.log('st2', st2);
-        console.log('st2 inv', invert(st2));
-
-        var plt = faces(CDIM, DIM, false);
-    }
-
     return api;
 
 });
