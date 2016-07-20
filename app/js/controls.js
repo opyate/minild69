@@ -2,33 +2,6 @@ define([], function() {
     "use strict";
 
     // from http://learningthreejs.com/blog/2011/09/12/lets-Make-a-3D-game-keyboard/
-    //
-    // KeyboardState.js keep the current state of the keyboard.
-    // It is possible to query it at any time. No need of an event.
-    // This is particularly convenient in loop driven case, like in
-    // 3D demos or games.
-    //
-    // # Usage
-    //
-    // **Step 1**: Create the object
-    //
-    // ```var keyboard = new KeyboardState();```
-    //
-    // **Step 2**: Query the keyboard state
-    //
-    // This will return true if shift and A are pressed, false otherwise
-    //
-    // ```keyboard.pressed("shift+A")```
-    //
-    // **Step 3**: Stop listening to the keyboard
-    //
-    // ```keyboard.destroy()```
-    //
-    // NOTE: this library may be nice as standaline. independant from three.js
-    // - rename it keyboardForGame
-    //
-    // # Code
-    //
 
     /**
      * - NOTE: it would be quite easy to push event-driven too
