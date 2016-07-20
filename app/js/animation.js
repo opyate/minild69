@@ -2,8 +2,8 @@ define([
     'config',
     'tween',
     'calcs',
-    'logic'
-], function(config, tween, calcs, logic) {
+    'slammer'
+], function(config, tween, calcs, slammer) {
     "use strict";
 
     var api = {};
@@ -118,15 +118,22 @@ define([
                         // Regardless, we want the below block to only
                         // run once.
                         if (idx == world.level.planes.length - 1) {
+                            // the plane/stencil to slam into the planet
+                            var stencil = _.head(world.level.stencils.stencils);
+                            var plane = _.head(world.level.planes);
+
                             var appliedIdx = 0;//getFrom(world.props.planet.rotation);
-                            var stencil = world.level.stencils.stencils[0];
                             var rotations = 0;//getFrom(world.props.planet.rotation);
-                            //if (false)
-                            logic.faces.slam(
+
+                            // mutate 'appliedStencils'
+                            slammer.slamStencil(
                                 world.level.stencils.appliedStencils,
                                 appliedIdx,
                                 stencil,
                                 rotations);
+
+                            // mutate the planet to reflect 'appliedStencils'
+                            slammer.slamPlane(world.props.planet, plane);
 
                             console.log('slam complete', world);
 
