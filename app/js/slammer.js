@@ -15,6 +15,7 @@ define(['logic'], function(logic) {
 
     var slamPlane = function(planet, plane) {
 
+        console.log(planet, plane);
     };
 
     return {

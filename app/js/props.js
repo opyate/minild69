@@ -22,14 +22,18 @@ define([], function() {
         var mesh = new THREE.Mesh(geometry, material);
         mesh.position.set(pos, 0, 0);
 
-        return mesh;
+        return {
+            name: 'planet',
+            geometry: geometry,
+            mesh: mesh
+        };
     };
 
     var addProps = function(scene) {
         var container = new THREE.Object3D();
 
         var planet = addPlanet();
-        container.add(planet);
+        container.add(planet.mesh);
 
         // tilt the container
         container.rotateX(Math.PI / 180 * 15);

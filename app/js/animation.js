@@ -74,7 +74,7 @@ define([
                     api.isAnimatingCube = true;
                 })
                 .onUpdate(function() {
-                    rotateAroundWorldAxis(obj, state.axis, this.pos - previous);
+                    rotateAroundWorldAxis(obj.mesh, state.axis, this.pos - previous);
                     previous = this.pos;
                 })
                 .onComplete(function() {
@@ -94,11 +94,11 @@ define([
                     // the cube face, to look like it's slamming into it.
                     pos = 101;
                 } else {
-                    pos = plane.position.z - log;
+                    pos = plane.mesh.position.z - log;
                 }
 
                 new tween.Tween({
-                        pos: plane.position.z
+                        pos: plane.mesh.position.z
                     })
                     .to({
                         pos: pos
@@ -107,7 +107,7 @@ define([
                         api.isAnimatingPlanes = true;
                     })
                     .onUpdate(function() {
-                        plane.position.set(0, 0, this.pos);
+                        plane.mesh.position.set(0, 0, this.pos);
                     })
                     .onComplete(function() {
                         api.isAnimatingPlanes = false;
@@ -135,8 +135,9 @@ define([
                             // mutate the planet to reflect 'appliedStencils'
                             slammer.slamPlane(world.props.planet, plane);
 
-                            console.log('slam complete', world);
+                            //console.log('slam complete', world);
 
+                            // the first plane/stencil is now used up
                             world.level.planes = _.tail(world.level.planes);
                             world.level.stencils.stencils = _.tail(world.level.stencils.stencils);
                         }

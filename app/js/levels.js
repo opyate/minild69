@@ -73,7 +73,7 @@ define([
 
         var planes = _.map(stencils.stencils, function(stencil, idx) {
             var plane = getPlaneFromStencil(idx, stencil, config.width, stencils.stencils.length);
-            world.props.container.add(plane);
+            world.props.container.add(plane.mesh);
             return plane;
         });
 
@@ -106,10 +106,10 @@ define([
             stencil.length,
             stencil.length);
 
-        var plane = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
+        var mesh = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
         var log = calcs.logslider(idx, config.distance, numberOfStencils - 1);
         var z = (config.distance - log) + width * 2;
-        plane.position.set(0, 0, z);
+        mesh.position.set(0, 0, z);
 
         // faces are triangles, but we want squares (i.e. pairs of triangles)
         var squareCount = geometry.faces.length / 2;
@@ -122,7 +122,11 @@ define([
             geometry.faces[j + 1].materialIndex = flatStencil[i] ? 0 : 1;
         }
 
-        return plane;
+        return {
+            name: 'plane',
+            geometry: geometry,
+            mesh: mesh
+        };
     }
 
     return {
