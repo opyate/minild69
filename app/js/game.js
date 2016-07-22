@@ -42,18 +42,19 @@ define([
             );
         }
 
-        // rotate the world
-        _.each(['a', 'd', 'w', 's', 'q', 'e'], function (direction) {
+        _.each(['a', 'd', 'w', 's', 'q', 'e', 'space'], function (direction) {
             if (world.keyboard.pressed(direction)) {
-                animation.moveCube(world, direction);
+                if (direction === 'space') {
+                    // slam the colonisers
+                    animation.slam(world);
+                } else {
+                    // rotate the world
+                    animation.rotatePlanet(world, direction);
+                }
                 return false; // break
             }
         });
 
-        // slam the colonisers
-        if (world.keyboard.pressed('space')) {
-            animation.slam(world);
-        }
         tween.update();
 
         world.stage.renderer.autoClear = false;

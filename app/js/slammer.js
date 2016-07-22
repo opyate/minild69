@@ -13,9 +13,24 @@ define(['logic'], function(logic) {
         });
     };
 
-    var slamPlane = function(planet, plane) {
+    var slamPlane = function(world, plane) {
+        var planet = world.props.planet;
+        var container = world.props.container;
+        var scene = world.stage.scene;
 
-        console.log(planet, plane);
+        // don't rely on the render loop to fix our numbers.
+        scene.updateMatrixWorld();
+
+        container.remove(plane.mesh);
+
+        var newPlaneMatrix = new THREE.Matrix4();
+
+        newPlaneMatrix.getInverse(planet.mesh.matrixWorld);
+        newPlaneMatrix.multiply(container.matrixWorld);
+
+        plane.mesh.applyMatrix(newPlaneMatrix);
+
+        planet.mesh.add(plane.mesh);
     };
 
     return {

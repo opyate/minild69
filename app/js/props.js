@@ -1,13 +1,19 @@
 define([], function() {
     "use strict";
 
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+    // Returns a random number between min (inclusive) and max (exclusive)
+    function getRandomArbitrary(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
     function addPlanet(size, pos) {
         size = size || 200;
         pos = pos || 0;
         var geometry = new THREE.BoxGeometry(size, size, size);
 
         var colors = _.times(6, function() {
-            return new THREE.Color(Math.random() * 0xffffff);
+            return new THREE.Color(getRandomArbitrary(0.5, 1.0) * 0xffffff);
         });
 
         for (var i = 0; i < 6; i++) {
