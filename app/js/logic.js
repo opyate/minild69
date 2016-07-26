@@ -117,8 +117,6 @@ define([], function() {
     api.faces.initFaces = initFaces;
 
     var rotateFace = function(face, n) {
-        n = n || 1;
-
         _.times(n, function() {
             face = rot(face);
         });

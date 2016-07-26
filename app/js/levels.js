@@ -22,6 +22,7 @@ define([
         var stencilsUsed = [];
         var stencilIndices = [];
 
+        // for each of the 6 planet faces
         _.times(6, function () {
             // for each level up to the number of stencils available, bias
             // towards the level number, then cycle
@@ -30,9 +31,12 @@ define([
                 logic.stencils.length,
                 stencilParams.idx);
 
+            if (randomStencilIndex > logic.stencils.length - 1) {
+                // TODO fix the bug in calcs.rand where the stencil index is too big
+                randomStencilIndex = logic.stencils.length - 1;
+            }
             stencilIndices.push(randomStencilIndex);
             var stencilObj = logic.stencils[randomStencilIndex];
-
             stencilsUsed.push(stencilObj.name);
             var stencil = logic.faces.initFace(stencilParams.width, stencilObj.fn);
             stencils.push(stencil);
@@ -46,6 +50,9 @@ define([
                 stencils.push(inverse);
             }
         });
+
+        // make it fun
+        stencils = _.shuffle(stencils);
 
         // most of the below is for debugging, and the caller will mostly
         // be interested in 'stencils' and 'appliedStencils'.
@@ -107,8 +114,7 @@ define([
             stencil.length);
 
         var mesh = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
-        var log = calcs.logslider(idx, config.distance, numberOfStencils - 1);
-        var z = (config.distance - log) + width * 2;
+        var z = calcs.stencilZ(idx, numberOfStencils);
         mesh.position.set(0, 0, z);
 
         // faces are triangles, but we want squares (i.e. pairs of triangles)

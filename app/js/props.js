@@ -11,9 +11,13 @@ define([], function() {
         size = size || 200;
         pos = pos || 0;
         var geometry = new THREE.BoxGeometry(size, size, size);
+        geometry.name = "planet";
+        // 100 - 256
+        var r = getRandomArbitrary(100, 256); // green to blue for planets with LIFE!
 
-        var colors = _.times(6, function() {
-            return new THREE.Color(getRandomArbitrary(0.5, 1.0) * 0xffffff);
+        // TODO use one colour, and a point light!
+        var colors = _.times(6, function(i) {
+            return new THREE.Color("hsl(" + r + ", 100%, " + ((i+1) * 10) + "%)");
         });
 
         for (var i = 0; i < 6; i++) {
@@ -23,9 +27,11 @@ define([], function() {
 
         var material = new THREE.MeshBasicMaterial({
             color: 0xffffff,
-            vertexColors: THREE.FaceColors
+            vertexColors: THREE.FaceColors,
+            side: THREE.DoubleSide // raycast from within planet
         });
         var mesh = new THREE.Mesh(geometry, material);
+        mesh.name = "planet";
         mesh.position.set(pos, 0, 0);
 
         return {
@@ -34,6 +40,17 @@ define([], function() {
             mesh: mesh
         };
     };
+
+    function getRaycaster(container, direction) {
+        var matrix = new THREE.Matrix4();
+        matrix = matrix.extractRotation(container.matrix);
+
+        direction = direction.applyMatrix4(matrix).normalize();
+
+        var raycaster = new THREE.Raycaster();
+        raycaster.set(container.position, direction);
+        return raycaster;
+    }
 
     var addProps = function(scene) {
         var container = new THREE.Object3D();
@@ -47,10 +64,20 @@ define([], function() {
         container.position.set(-500, 0, 0);
 
         scene.add(container);
+        scene.updateMatrixWorld(true);
+
+        // get raycaster from origin (where planet will be)
+        // now that the container has been rotated
+        var frontCaster = getRaycaster(container, new THREE.Vector3(0, 0, 1));
+        var sideCaster = getRaycaster(container, new THREE.Vector3(0, 1, 0));
 
         return {
             container: container,
-            planet: planet
+            planet: planet,
+            raycasters: {
+                front: frontCaster,
+                side: sideCaster
+            }
         };
     };
 

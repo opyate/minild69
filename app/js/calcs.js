@@ -1,4 +1,6 @@
-define([], function () {
+define([
+    'config'
+], function (config) {
     "use strict";
 
     // http://stackoverflow.com/a/29332646/51280
@@ -47,52 +49,13 @@ define([], function () {
         };
     }
 
-    var logsliderCache = {};
-    function lsKey(idx, max) {
-        return 'ls' + idx + '-' + max;
-    }
-    // http://stackoverflow.com/a/846249/51280
-    // we also provide numberOfStencils, so even if we're given
-    // 6 or 15 stencils, we won't go over 'max' pixels.
-    // E.g. they'll be drawn like this:
-    //             <-- max pixels ------------>
-    //            |         |      |     |   |||
-    //            |            |         |   | |
-    //       ---> x                            y <---
-    //
-    // Clearly, the first example has more stencils,
-    // but get squashed into the same amount of pixels.
-    function logslider(idx, max, numberOfStencils) {
-        // we want the first stencil (at idx 0) to
-        // be the furthest away from the other stencils
-        // ('x' above in the comment)
-        // the stencils at the higher indexes should
-        // be tightly packed. ('y' above)
-        idx = numberOfStencils - idx;
-        var key = lsKey(idx, max);
-        if (key in logsliderCache) {
-            return logsliderCache[key];
-        } else {
-
-            var minp = 0;
-            var maxp = numberOfStencils;
-
-            // The result should be between 1 and max
-            var minv = Math.log(1);
-            var maxv = Math.log(max);
-
-            // calculate adjustment factor
-            var scale = (maxv - minv) / (maxp - minp);
-
-            var result = Math.exp(minv + scale * (idx - minp));
-            logsliderCache[key] = result;
-            return result;
-        }
+    function stencilPosition(idx, numberOfStencils) {
+        return idx * ((config.width / 2) + (numberOfStencils - idx) * 10) + config.distance;
     }
 
     return {
         rand: getRndBias,
         params: getStencilParameters,
-        logslider: logslider
+        stencilZ: stencilPosition
     };
 });

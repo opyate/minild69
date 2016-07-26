@@ -1,4 +1,18 @@
 
+# Start
+
+## Run the compiled app
+
+    cd app
+    open index.html
+
+## Develop
+
+    npm install
+    bower install
+    grunt bowercopy
+    make
+
 # State
 
 ```

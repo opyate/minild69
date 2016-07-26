@@ -1,9 +1,12 @@
 define([
     'config',
     'tween',
-    'calcs',
-    'slammer'
-], function(config, tween, calcs, slammer) {
+    'slammer',
+    'rotation',
+    'util',
+    'logic',
+    'calcs'
+], function(config, tween, slammer, rotation, util, logic, calcs) {
     "use strict";
 
     var isAnimatingCube = false;
@@ -77,6 +80,7 @@ define([
                 })
                 .onComplete(function() {
                     isAnimatingCube = false;
+                    world.stage.scene.updateMatrixWorld();
                 }).start();
         }
     };
@@ -86,10 +90,14 @@ define([
 
             var positions = _.reduce(world.level.planes, function(acc, plane, idx) {
                 var z = plane.mesh.position.z;
-                var log = calcs.logslider(idx, config.distance, world.level.stencils.numberOfStencils - 1);
+                var endPos = calcs.stencilZ(idx, world.level.stencils.numberOfStencils);
+                if (idx == 0) {
+                    // right above planet's surface
+                    endPos = (config.width / 2) + 1;
+                }
                 return {
                     start: _.concat(acc.start, z),
-                    end: _.concat(acc.end, idx == 0 ? (config.width / 2) + 1 : z - log)
+                    end: _.concat(acc.end, endPos)
                 };
             }, {
                 start: [],
@@ -112,13 +120,15 @@ define([
                 })
                 .onComplete(function() {
                     isAnimatingPlanes = false;
+                    world.stage.scene.updateMatrixWorld();
 
                     // the plane/stencil to slam into the planet
                     var stencil = _.head(world.level.stencils.stencils);
                     var plane = _.head(world.level.planes);
 
-                    var appliedIdx = 0; //getFrom(world.props.planet.rotation);
-                    var rotations = 0; //getFrom(world.props.planet.rotation);
+                    var rots = rotation.get(world);
+                    var appliedIdx = rots.face;
+                    var rotations = rots.rotations;
 
                     // mutate 'appliedStencils'
                     slammer.slamStencil(
@@ -130,12 +140,18 @@ define([
                     // mutate the planet to reflect 'appliedStencils'
                     slammer.slamPlane(world, plane);
 
-                    //console.log('slam complete', world);
-
                     // the first plane/stencil is now used up
                     world.level.planes = _.tail(world.level.planes);
                     world.level.stencils.stencils = _.tail(world.level.stencils.stencils);
 
+
+                    world.progress.scores[world.progress.levelNumber] = logic.faces.calc(world.level.stencils.appliedStencils);
+
+                    if (_.isEmpty(world.level.planes)) {
+                        world.progress.missed += world.progress.scores[world.progress.levelNumber].off;
+                        world.level = null; // done with this level
+                        slammer.unslam(world);
+                    }
                 })
                 .start();
         }

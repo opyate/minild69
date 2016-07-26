@@ -33,8 +33,24 @@ define(['logic'], function(logic) {
         planet.mesh.add(plane.mesh);
     };
 
+    var unslam = function (world) {
+        var planet = world.props.planet.mesh;
+
+        for( var i = planet.children.length - 1; i >= 0; i--) {
+            var child = planet.children[i];
+            planet.remove(child);
+            if (false) {
+                _.each(child.material.materials, function (material) {
+                    material.dispose();
+                });
+                child.geometry.dispose();
+            }
+        }
+    };
+
     return {
         slamStencil: slamStencil,
-        slamPlane: slamPlane
+        slamPlane: slamPlane,
+        unslam: unslam
     };
 });

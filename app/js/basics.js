@@ -59,13 +59,20 @@ define(['controls', 'config', 'promise'], function(controls, config, promise) {
         renderer = new THREE.WebGLRenderer({antialias: true});
         renderer.setSize(window.innerWidth, window.innerHeight);
 
-        document.body.appendChild(renderer.domElement);
+        var container = document.getElementById('world');
+        container.appendChild(renderer.domElement);
 
         return {
             scene: scene,
             camera: camera,
             background: background(),
-            renderer: renderer
+            renderer: renderer,
+            hud: {
+                level: document.getElementById('level'),
+                score: document.getElementById('score'),
+                missed: document.getElementById('missed'),
+                message: document.getElementById('message')
+            }
         };
     };
 

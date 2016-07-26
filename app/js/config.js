@@ -2,7 +2,7 @@ define([], function () {
     "use strict";
 
     return {
-        background: 'img/stars2.jpg',
+        background: 'img/stars.jpg',
         // everything is square, so we'll re-use width.
         width: 200,
         // how far the stencils are from the planet
@@ -12,6 +12,16 @@ define([], function () {
             // the number of levels after which stencil size and difficulty changes
             threshold: 7,
             initStencilWidth: 3
-        }
+        },
+        threshold: 42, // change this in index.html too...
+        loose: [
+            "Coloniser? Colonoscopy!",
+            "A colony felony...",
+            "A colony comedy. But, I cry.",
+            "Colony prodigy? Colony wannabe!",
+            "Honestly, a colony irony.",
+            "You're in the colony family NO MORE.",
+            "Ugh."
+        ]
     };
 });
