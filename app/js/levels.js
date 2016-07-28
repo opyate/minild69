@@ -39,6 +39,9 @@ define([
             var stencilObj = logic.stencils[randomStencilIndex];
             stencilsUsed.push(stencilObj.name);
             var stencil = logic.faces.initFace(stencilParams.width, stencilObj.fn);
+            // randomly rotate stencil first (tx prankard@LD)
+            stencil = logic.faces.rotate(stencil, calcs.rndRange(0,3));
+
             stencils.push(stencil);
 
             // TODO see note on logic.js L133
