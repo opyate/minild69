@@ -54,7 +54,14 @@ body {
 .nondescript a {
   color: #777;
 }
-
+.start {
+  color: #333;
+  background-color: #ffff00;
+  padding: 5px;
+}
+.start:after {
+  content: '\00bb';
+}
 .container {
   margin: 30px;
   display: inline-block;
