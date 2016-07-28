@@ -100,7 +100,7 @@ define([
     });
     var invisibleMaterial = new THREE.MeshBasicMaterial({
         transparent: true,
-        opacity: 0.0,
+        opacity: 0.3,
         side: THREE.DoubleSide
     });
     var materials = [
