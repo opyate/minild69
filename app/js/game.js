@@ -40,11 +40,7 @@ define([
 
             var level = levels.getLevel(world);
             world.level = level;
-            console.log(
-                'LEVEL',
-                world.level.stencils.level,
-                world.level.stencils.debug.stencilsUsed
-            );
+            //console.log('LEVEL', world.level.stencils.level, world.level.stencils.debug.stencilsUsed);
         }
 
         world.stage.hud.missed.innerHTML = world.progress.missed;
